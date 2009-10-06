@@ -1,0 +1,34 @@
+* {font-family: Georgia, Verdana, Times;}
+
+body {margin: 10px 50px;}
+
+#background {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width:30px;
+  background-color: #234567;
+  z-index: 999;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+label, input, textarea {
+  font-size: 18px;
+}
+
+input, label {
+  display: block;
+  margin: 5px;
+}
+
+label {
+  color: #888;
+}
+
+label:after {
+  content: ":";
+}

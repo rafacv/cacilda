@@ -1,0 +1,54 @@
+h1. Cacilda
+
+h2. A Python Wiki powered by Cassandra
+
+Author: Rafael Valverde (rafael@codeazur.com.br)
+
+h3. About it
+
+Cacilda's a "Python":http://www.python.org/ application of "WSGI":http://www.wsgi.org/ protocol that implements a web-based "wiki software":http://en.wikipedia.org/wiki/Wiki_software and is powered by the non-relational database "Cassandra":http://incubator.apache.org/cassandra/.
+Out-of-box, it offers a simple wiki system, with no authentication, logging or caching engines. Those should be implemented as middleware software without great efforts.
+
+Because the fashion Cacilda was thought and coded - being minimal and relying the less on third-party libraries - it was necessary to reinvent the wheel at some extent,
+e.g., some boilerplate code was introduced like those needed to handle POST's variables.
+
+Versioning system was designed to accomplish minimal storage footprint and as so it was coded using _difflib_ module to persists only modified lines and its contexts yet being totally reversible.
+All previous versions from a particular article is saved as a delta, i.e., a text-based file that keeps track of every change made. The delta snippets are relative to the newer and most adjacent change so if you want to go three versions back, you need to gradually reverse one by one.
+The reason for that is that reversing changes doesn't occur very often as getting the current version of an article. The exchange seems to be worthwhile.
+*Update:* In fact, using _difflib_ to track down modifications turned out to be a bad decision since the library saves all data from the two versions that are being compared in order to be able to revert any changes.
+
+The _Template_ class is a very simple wrapper to the standard library _string.Template_. I opted not to make it a function to keep things namespaced.
+
+As a general comment, I'd like to state Cacilda is a first attempt towards learning about Cassandra and was made in a rush between readings. Don't expect too much from the code regarding modularization or general reuse principles.
+Its main purpose is to provide a concise and ready to use wiki.
+
+h3. Cacilda relies on:
+
+* "lazyboy module":http://www.github.com/digg/lazyboy: an abstraction layer to "ThriftInterface":http://incubator.apache.org/thrift/ that interfaces Cassandra
+* "textile module":http://pypi.python.org/pypi/textile: an implementation of "Textile markup language":http://www.textism.com/tools/textile/
+* Python's standard libraries such as "mimetypes":http://www.python.org/doc/2.6/library/mimetypes.html, "urlparse":http://www.python.org/doc/2.6/library/urlparse.html, "cgi":http://www.python.org/doc/2.6/library/cgi.html and "difflib":http://www.python.org/doc/2.6/library/difflib.html
+
+h3. ToDo's:
+
+* Make an exception from _Cacilda.not&#95;found_ method so it could be easily raised from anywhere (middleware apps);
+* Implement a verison control system - currently it's only saving an article history, there's no way to revert versions or something alike from interface;
+* Implement a simple auth middleware;
+* Abstract routing routines. Currently it's tightly coupled to the app - actually, it's hardcoded into Cacilda class;
+* Load database configuration from a file;
+* Document code and write down some tests.
+
+h3. Database schema
+
+The following _storage-conf.xml_ schema is assumed when you use Cacilda:
+
+<pre><code><Keyspaces>
+  <Keyspace Name="Cacilda">
+    <ColumnFamily CompareWith="UTF8Type"
+                  Name="wiki"
+                  FlushPeriodInMinutes="60"/>
+    <ColumnFamily CompareWith="UTF8Type"
+                  Name="wiki_history"
+                  FlushPeriodInMinutes="60"/>
+  </Keyspace>
+</Keyspaces>
+</code></pre>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Cacilda</title>
+  <meta name="author" content="Rafael Valverde (rafael@codeazur.com.br)">
+  <link rel="stylesheet" href="/static/fashion.css" type="text/css" media="screen" title="Cacilda" charset="utf-8">
+  <script type="text/javascript">
+    function make_slug() {
+      var title = document.getElementById("title")
+      var slug = document.getElementById("slug")
+      if (slug.value != "index") {
+        title.value = title.value.replace(/\s+/g, " ").replace(/^\s+|\s$/g, "")
+        slug.value = title.value.replace(/\s/g, "-").replace(/[^\w\-]/gi, "").toLowerCase()
+      }
+    }
+
+    function filter_char() {
+      var target = event.target || event.srcElement
+      var key = event.keyCode || event.which
+
+      if (String.fromCharCode(key).match(/[a-z\-\_]/g))
+        return
+
+      if (event.preventDefault)
+        event.preventDefault()
+      else
+        event.returnValue = false
+    }
+  </script>
+</head>
+<body>
+
+  <div id="background"></div>
+  <h1>$title</h1>
+
+  <form method="post">
+  <label for="title">Title</label>
+  <input type="text" name="title" id="title" value=""
+    onchange="make_slug()">
+  <label for="slug">Slug (url address)</label>
+  <input type="text" name="slug" id="slug" value="$slug"
+    onkeypress="filter_char()">
+
+  <label for="content">Content</label>
+  <textarea name="content" id="content" rows="30" cols="100">$content</textarea>
+
+  <p><input type="submit" value="Submit changes"></p>
+
+</body>
+</html>
